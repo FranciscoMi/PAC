@@ -61,13 +61,19 @@ class game{
     return false;  
   };//end checkDatas
 
-  playGame(){
-    if (this.actualGame<this.numGame){
-      console.log('ready');
+  playGame(numSelected){
+    console.log(numSelected);
+    console.log(this.actualGame+','+this.numGame);
+    if (this.actualGame<=this.numGame){
+      const numMachine=Math.floor(Math.random()*3);
+      
+      this.actualGame++;
+      document.querySelector('#actual').textContent=this.actualGame;
+      console.log(numMachine);
     }
     
   }//end play game
-  
+
   resetGame(){
     if(this.ready){
     const title=document.querySelector('h1');
@@ -88,29 +94,53 @@ class game{
       title.textContent=oldText;
 
       const imagesGamer=document.querySelectorAll('img');
-      imagesGamer.forEach((element, index) => {
+      imagesGamer.forEach((e,index) => {
       imagesGamer[index].src='img/defecto.png';
     });
     },2000);
     }
   }//end resetGame
+
+  selectImg(event){
+    let numSelected;
+    const compareEvent=document.querySelectorAll('#jugador img');
+    compareEvent.forEach((element,index)=> {
+      if(compareEvent[index].className==='seleccionado'){
+        compareEvent[index].classList.toggle('seleccionado');
+        compareEvent[index].classList.toggle('noSeleccionado');
+      }
+      if (event.className===compareEvent[index].className){
+        event.classList.toggle('noSeleccionado');
+        event.classList.toggle('seleccionado');
+        numSelected=index;
+      }//end if
+    }); 
+    return numSelected;
+  }//end selectImg
 }
 
 // Nos aseguramos que el código se ejecutará una vez se haya cargado todo el contenido de la página y cargamos la ejecución de los eventos 
 document.addEventListener('DOMContentLoaded',()=>{
   const juego = new game;
+  let varSelected=juego.selectImg(document.querySelector('.seleccionado'));
+  console.log(varSelected);
+
   document.addEventListener('click',(event) => {
     switch (event.target.textContent){
       case '¡JUGAR!':
         juego.prepareGame();
         break;
       case '¡YA!':
-        juego.playGame();
+        juego.playGame(varSelected);
         break;
       case 'RESET':
         juego.resetGame();
         break;
       }//end switch 
+
+    if(event.target.parentNode.id=='jugador' && juego.ready){
+      varSelected=juego.selectImg(event.target);
+    };
   });//end addEventListener click
   
 });//end DOMContentLoader
