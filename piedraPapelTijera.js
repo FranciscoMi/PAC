@@ -16,24 +16,10 @@ class game{
 
   //función que actua según el botón pulsado
   prepareGame(){
-    document.addEventListener('click',(event) => {
-      switch (event.target.textContent) {
-        case '¡JUGAR!':
-          if(this.checkDatas()){
-            this.prepareImgs();
-            this.ready=true;
-          }
-          break;
-        case '¡YA!':
-          if(this.ready){
-            playGame();
-          }
-          break;
-        case 'RESET':
-          resetGame();
-          break;
-        }//end switch 
-    });//end addEventListener click
+    if(this.checkDatas()){
+      this.prepareImgs();
+      this.ready=true;
+    }
   }
   
 //mostramos las imagenes de las opciones del jugador
@@ -49,12 +35,14 @@ class game{
     let dataError=false;
     const checkName=document.querySelector('input[name="nombre"]');
     const checkNumberGamers=document.querySelector('input[name="partidas"]');
+
     if (!/\D{1}\w{2,}/.test(checkName.value)){
       checkName.classList.add("fondoRojo");
       dataError=true;
     } else{
       checkName.classList.remove("fondoRojo");
     }
+
     if(!/^[1-9]\d*$/.test(checkNumberGamers.value)){
       checkNumberGamers.classList.add("fondoRojo");
       dataError=true;
@@ -73,28 +61,58 @@ class game{
     return false;  
   };//end checkDatas
 
-  playGame(numGame){
-    if (actualGame<numGame){console.log('ready');}
+  playGame(){
+    if (this.actualGame<this.numGame){
+      console.log('ready');
+    }
     
   }//end play game
-
+  
   resetGame(){
-    const checkName=document.querySelector('input[name="nombre"]');
-    const checkNumberGamers=document.querySelector('input[name="partidas"]');
-    checkName.disabled=false;
-    checkNumberGamers.disabled=false;
-    document.querySelector('#actual').textContent=0;
-    this.numGame=0;
-    this.actualGame=1;
-    document.querySelector('#total').textContent=this.numGame;
-    this.ready=false;
+    if(this.ready){
+    const title=document.querySelector('h1');
+    const oldText=title.textContent;
+    title.textContent='Nueva Partida';
+    setTimeout(()=>{
+      const checkName=document.querySelector('input[name="nombre"]');
+      const checkNumberGamers=document.querySelector('input[name="partidas"]');
+      checkName.disabled=false;
+      checkNumberGamers.disabled=false;
+      document.querySelector('#actual').textContent=0;
+      this.numGame=0;
+      this.actualGame=1;
+      checkName.value='';
+      checkNumberGamers.value=0;
+      document.querySelector('#total').textContent=this.numGame;
+      this.ready=false;
+      title.textContent=oldText;
+
+      const imagesGamer=document.querySelectorAll('img');
+      imagesGamer.forEach((element, index) => {
+      imagesGamer[index].src='img/defecto.png';
+    });
+    },2000);
+    }
   }//end resetGame
 }
 
 // Nos aseguramos que el código se ejecutará una vez se haya cargado todo el contenido de la página y cargamos la ejecución de los eventos 
 document.addEventListener('DOMContentLoaded',()=>{
   const juego = new game;
-  juego.prepareGame();
-});
+  document.addEventListener('click',(event) => {
+    switch (event.target.textContent){
+      case '¡JUGAR!':
+        juego.prepareGame();
+        break;
+      case '¡YA!':
+        juego.playGame();
+        break;
+      case 'RESET':
+        juego.resetGame();
+        break;
+      }//end switch 
+  });//end addEventListener click
+  
+});//end DOMContentLoader
 
 })();
