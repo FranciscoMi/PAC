@@ -30,6 +30,14 @@ class game{
     });
   }//function
   
+  prepareNewli(){
+    const addLi=document.querySelector('#historial')
+    const li=document.createElement('li');
+    const oldLi=addLi.firstChild;
+    li.textContent="Nueva Partida";
+    addLi.insertBefore(li,oldLi);
+  }
+  
 //Comprobamos que los datos introducidos sean los correctos
   checkDatas(){
     let dataError=false;
@@ -51,6 +59,7 @@ class game{
     }
 
     if (!dataError){
+      this.name=checkName.value;
       checkName.disabled=true;
       checkNumberGamers.disabled=true;
       document.querySelector('#actual').textContent=this.actualGame;
@@ -59,45 +68,55 @@ class game{
       return true;
     }
     return false;  
-  };//end checkDatas
+  }//end checkDatas
 
   playGame(numSelected){
-    console.log(numSelected);
-    console.log(this.actualGame+','+this.numGame);
+    const li=document.querySelector('#historial');
+    const newLi=document.createElement('li');
+    const imgMachine=document.querySelector('#maquina img');
+    const oldLi=li.firstChild;
     if (this.actualGame<=this.numGame){
       const numMachine=Math.floor(Math.random()*3);
-      
-      this.actualGame++;
+      const imgComputer=posibilidades[numMachine];
+      imgMachine.src=`img/${imgComputer}Ordenador.png`;
       document.querySelector('#actual').textContent=this.actualGame;
-      console.log(numMachine);
-    }
+    //Comparamos los resultados Jugador VS Máquina  
+      const difference=numSelected-numMachine;
+      if (difference===0) newLi.textContent='Empate';
+      if (difference==-1 || difference==2) newLi.textContent='Gana <<The Machine>>';
+      if (difference==1 || difference==-2) newLi.textContent=`Gana ${this.name}`;
+    //------------------------
+      li.insertBefore(newLi,oldLi);
+      this.actualGame++;
+    }//end if
     
   }//end play game
 
   resetGame(){
     if(this.ready){
-    const title=document.querySelector('h1');
-    const oldText=title.textContent;
-    title.textContent='Nueva Partida';
-    setTimeout(()=>{
-      const checkName=document.querySelector('input[name="nombre"]');
-      const checkNumberGamers=document.querySelector('input[name="partidas"]');
-      checkName.disabled=false;
-      checkNumberGamers.disabled=false;
-      document.querySelector('#actual').textContent=0;
-      this.numGame=0;
-      this.actualGame=1;
-      checkName.value='';
-      checkNumberGamers.value=0;
-      document.querySelector('#total').textContent=this.numGame;
-      this.ready=false;
-      title.textContent=oldText;
-
-      const imagesGamer=document.querySelectorAll('img');
-      imagesGamer.forEach((e,index) => {
-      imagesGamer[index].src='img/defecto.png';
-    });
-    },2000);
+      const title=document.querySelector('h1');
+      const oldText=title.textContent;
+      title.textContent='Nueva Partida';
+      this.prepareNewli();
+    
+      setTimeout(()=>{
+        const checkName=document.querySelector('input[name="nombre"]');
+        const checkNumberGamers=document.querySelector('input[name="partidas"]');
+        checkName.disabled=false;
+        checkNumberGamers.disabled=false;
+        document.querySelector('#actual').textContent=0;
+        this.numGame=0;
+        this.actualGame=1;
+        checkName.value='';
+        checkNumberGamers.value=0;
+        document.querySelector('#total').textContent=this.numGame;
+        this.ready=false;
+        title.textContent=oldText;
+        const imagesGamer=document.querySelectorAll('img');
+        imagesGamer.forEach((e,index) => {
+          imagesGamer[index].src='img/defecto.png';
+        });//end foreach
+    },2000);//end setTimeout
     }
   }//end resetGame
 
@@ -136,11 +155,11 @@ document.addEventListener('DOMContentLoaded',()=>{
       case 'RESET':
         juego.resetGame();
         break;
-      }//end switch 
+    }//end switch 
 
     if(event.target.parentNode.id=='jugador' && juego.ready){
       varSelected=juego.selectImg(event.target);
-    };
+    }
   });//end addEventListener click
   
 });//end DOMContentLoader
