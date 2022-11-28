@@ -14,7 +14,7 @@ class game{
     this.ready=false;
   }
 
-  //función que actua según el botón pulsado
+  //Función que prepara el inicio del juego
   prepareGame(){
     if(this.checkDatas()){
       this.prepareImgs();
@@ -22,7 +22,7 @@ class game{
     }
   }
   
-//mostramos las imagenes de las opciones del jugador
+//Función que muestra las imagenes de las opciones al jugador
   prepareImgs(){
     const imagesGamer=document.querySelectorAll('#jugador img');
     posibilidades.forEach((element, index) => {
@@ -30,6 +30,7 @@ class game{
     });
   }//function
   
+  //Función que agrega el elemento de los resultados del historial al principio de la lista
   prepareNewli(){
     const addLi=document.querySelector('#historial')
     const li=document.createElement('li');
@@ -38,7 +39,7 @@ class game{
     addLi.insertBefore(li,oldLi);
   }
   
-//Comprobamos que los datos introducidos sean los correctos
+//Función que comprueba que los datos introducidos sean los correctos
   checkDatas(){
     let dataError=false;
     const checkName=document.querySelector('input[name="nombre"]');
@@ -70,6 +71,7 @@ class game{
     return false;  
   }//end checkDatas
 
+  //Función que genera y compara los resultados del juego
   playGame(numSelected){
     const li=document.querySelector('#historial');
     const newLi=document.createElement('li');
@@ -92,6 +94,7 @@ class game{
     
   }//end play game
 
+  //Función que reinicia el juego y vuelve a empezar conservando el historial
   resetGame(){
     if(this.ready){
       const title=document.querySelector('h1');
@@ -120,6 +123,7 @@ class game{
     }
   }//end resetGame
 
+  //Función que muestra la imagen a la que ha hecho click el jugador
   selectImg(event){
     let numSelected;
     const compareEvent=document.querySelectorAll('#jugador img');
@@ -145,6 +149,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   console.log(varSelected);
 
   document.addEventListener('click',(event) => {
+    //Ejecutamos la función correspondiente al botón pulsado
     switch (event.target.textContent){
       case '¡JUGAR!':
         juego.prepareGame();
@@ -156,7 +161,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         juego.resetGame();
         break;
     }//end switch 
-
+    //Este evento nos permite mostrar la imagen que el jugador ha seleccionado
     if(event.target.parentNode.id=='jugador' && juego.ready){
       varSelected=juego.selectImg(event.target);
     }
