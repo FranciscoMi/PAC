@@ -5,7 +5,7 @@
   var posibilidades = ["piedra", "papel", "tijera"];
   //
 
-  //objeto que controla el juego
+  //Objeto que contiene las funciones del Juego
 class game{
   constructor(){
     this.name='';
@@ -14,32 +14,7 @@ class game{
     this.ready=false;
   }
 
-  //Función que prepara el inicio del juego
-  prepareGame(){
-    if(this.checkDatas()){
-      this.prepareImgs();
-      this.ready=true;
-    }
-  }
-  
-//Función que muestra las imagenes de las opciones al jugador
-  prepareImgs(){
-    const imagesGamer=document.querySelectorAll('#jugador img');
-    posibilidades.forEach((element, index) => {
-      imagesGamer[index].src=`img/${element}Jugador.png`;
-    });
-  }//function
-  
-  //Función que agrega el elemento de los resultados del historial al principio de la lista
-  prepareNewli(){
-    const addLi=document.querySelector('#historial')
-    const li=document.createElement('li');
-    const oldLi=addLi.firstChild;
-    li.textContent="Nueva Partida";
-    addLi.insertBefore(li,oldLi);
-  }
-  
-//Función que comprueba que los datos introducidos sean los correctos
+  //checkDatas comprueba que los datos introducidos sean los correctos
   checkDatas(){
     let dataError=false;
     const checkName=document.querySelector('input[name="nombre"]');
@@ -91,9 +66,33 @@ class game{
       li.insertBefore(newLi,oldLi);
       this.actualGame++;
     }//end if
-    
   }//end play game
 
+  //Función que prepara el inicio del juego
+  prepareGame(){
+    if(this.checkDatas()){
+      this.prepareImgs();
+      this.ready=true;
+    }
+  }
+  
+//Función que muestra las imagenes de las opciones al jugador
+  prepareImgs(){
+    const imagesGamer=document.querySelectorAll('#jugador img');
+    posibilidades.forEach((element, index) => {
+      imagesGamer[index].src=`img/${element}Jugador.png`;
+    });
+  }//function
+  
+  //Función que agrega el elemento de los resultados del historial al principio de la lista
+  prepareNewli(){
+    const addLi=document.querySelector('#historial')
+    const li=document.createElement('li');
+    const oldLi=addLi.firstChild;
+    li.textContent="Nueva Partida";
+    addLi.insertBefore(li,oldLi);
+  }
+  
   //Función que reinicia el juego y vuelve a empezar conservando el historial
   resetGame(){
     if(this.ready){
@@ -146,7 +145,6 @@ class game{
 document.addEventListener('DOMContentLoaded',()=>{
   const juego = new game;
   let varSelected=juego.selectImg(document.querySelector('.seleccionado'));
-  console.log(varSelected);
 
   document.addEventListener('click',(event) => {
     //Ejecutamos la función correspondiente al botón pulsado
@@ -161,12 +159,13 @@ document.addEventListener('DOMContentLoaded',()=>{
         juego.resetGame();
         break;
     }//end switch 
+    
     //Este evento nos permite mostrar la imagen que el jugador ha seleccionado
     if(event.target.parentNode.id=='jugador' && juego.ready){
       varSelected=juego.selectImg(event.target);
     }
   });//end addEventListener click
-  
+
 });//end DOMContentLoader
 
 })();
